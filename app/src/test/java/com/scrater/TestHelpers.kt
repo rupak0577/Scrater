@@ -11,7 +11,7 @@ class TestHelpers {
         }
 
         fun parseResponse(): TweetsResponse {
-            val inputStream = javaClass.classLoader?.getResourceAsStream("response.json")
+            val inputStream = javaClass.classLoader?.getResourceAsStream("response1.json")
             val content = inputStream?.bufferedReader()?.use(BufferedReader::readText)
             return responseAdapter.fromJson(content)!!
         }
