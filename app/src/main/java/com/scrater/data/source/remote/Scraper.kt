@@ -1,4 +1,4 @@
-package com.scrater.network
+package com.scrater.data.source.remote
 
 import com.scrater.vo.Entries
 import com.scrater.vo.Tweet

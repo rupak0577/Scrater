@@ -1,6 +1,6 @@
 package com.scrater.data.source.remote
 
-import com.scrater.network.TweetsResponse
+import com.scrater.data.source.remote.response.TweetsResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

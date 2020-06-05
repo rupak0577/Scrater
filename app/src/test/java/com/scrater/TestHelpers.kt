@@ -1,6 +1,6 @@
 package com.scrater
 
-import com.scrater.network.TweetsResponse
+import com.scrater.data.source.remote.response.TweetsResponse
 import com.squareup.moshi.Moshi
 import java.io.BufferedReader
 

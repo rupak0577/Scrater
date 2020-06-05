@@ -1,4 +1,4 @@
-package com.scrater.network
+package com.scrater.data.source.remote.response
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

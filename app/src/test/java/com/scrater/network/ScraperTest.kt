@@ -2,6 +2,7 @@ package com.scrater.network
 
 import com.google.common.truth.Truth.assertThat
 import com.scrater.TestHelpers.Companion.parseResponse
+import com.scrater.data.source.remote.Scraper
 import org.junit.Test
 
 class ScraperTest {

@@ -3,8 +3,7 @@ package com.scrater.data.source.remote
 import com.scrater.data.Result
 import com.scrater.data.source.TweetsDataSource
 import com.scrater.data.source.remote.response.ErrorResponse
-import com.scrater.network.Scraper
-import com.scrater.network.TweetsResponse
+import com.scrater.data.source.remote.response.TweetsResponse
 import com.scrater.vo.Tweet
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
