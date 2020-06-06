@@ -15,14 +15,14 @@ class TweetsRemoteDataSource(
     private val moshi: Moshi
 ) : TweetsDataSource {
 
-    override fun fetchTweets(username: String): Flow<Result<List<Tweet>>> = flow {
+    override fun fetchTweets(account: String): Flow<Result<List<Tweet>>> = flow {
         emit(
-            when (val response = request(username)) {
+            when (val response = request(account)) {
                 is ApiEmptyResponse -> {
                     Result.Error(Exception("Empty response"))
                 }
                 is ApiSuccessResponse -> {
-                    Result.Success(Scraper.parseHtml(response.body.htmlContent))
+                    Result.Success(Scraper.parseHtml(account, response.body.htmlContent))
                 }
                 is ApiErrorResponse -> {
                     val error = try {
@@ -36,10 +36,10 @@ class TweetsRemoteDataSource(
         )
     }
 
-    private suspend fun request(username: String): ApiResponse<TweetsResponse> {
+    private suspend fun request(account: String): ApiResponse<TweetsResponse> {
         return safeApiCall(
             call = {
-                ApiResponse.create(twitterService.fetchTweets(username))
+                ApiResponse.create(twitterService.fetchTweets(account))
             },
             errorMessage = "Error during network call"
         )

@@ -5,5 +5,5 @@ import com.scrater.vo.Tweet
 import kotlinx.coroutines.flow.Flow
 
 interface TweetsDataSource {
-    fun fetchTweets(username: String): Flow<Result<List<Tweet>>>
+    fun fetchTweets(account: String): Flow<Result<List<Tweet>>>
 }

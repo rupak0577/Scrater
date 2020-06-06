@@ -15,7 +15,7 @@ class ScraperTest {
 
     @Test
     fun `parse html`() {
-        val tweets = Scraper.parseHtml(parseResponse().htmlContent)
+        val tweets = Scraper.parseHtml("elonmusk", parseResponse().htmlContent)
         assertThat(tweets[0].isPinned).isTrue()
         assertThat(tweets[0].isRetweet).isFalse()
         assertThat(tweets[1].isPinned).isFalse()

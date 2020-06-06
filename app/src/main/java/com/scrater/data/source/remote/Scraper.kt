@@ -6,7 +6,7 @@ import org.jsoup.Jsoup
 
 object Scraper {
 
-    fun parseHtml(htmlContent: String): List<Tweet> {
+    fun parseHtml(account : String, htmlContent: String): List<Tweet> {
         val parsedDocument = Jsoup.parse(htmlContent)
         val tweets = parsedDocument.select(".stream-item")
         val profiles = parsedDocument.select(".js-profile-popup-actionable")
@@ -40,6 +40,7 @@ object Scraper {
 
             parsedTweets.add(
                 Tweet(
+                    account = account,
                     tweetId = tweetId,
                     tweetUrl = tweetUrl,
                     username = username,
