@@ -8,4 +8,6 @@ interface TweetsDataSource {
     fun fetchTweetsAsFlow(account: String): Flow<List<Tweet>>
 
     suspend fun fetchTweets(account: String): Result<List<Tweet>>
+
+    suspend fun saveTweets(account: String, tweets: List<Tweet>)
 }

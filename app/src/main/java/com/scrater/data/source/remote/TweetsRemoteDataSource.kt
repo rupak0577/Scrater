@@ -37,6 +37,10 @@ class TweetsRemoteDataSource(
         }
     }
 
+    override suspend fun saveTweets(account: String, tweets: List<Tweet>) {
+        throw NotImplementedError()
+    }
+
     private suspend fun request(account: String): ApiResponse<TweetsResponse> {
         return safeApiCall(
             call = {
