@@ -10,8 +10,14 @@ class TestHelpers {
             Moshi.Builder().build().adapter(TweetsResponse::class.java)
         }
 
-        fun parseResponse(): TweetsResponse {
+        fun parseResponse1(): TweetsResponse {
             val inputStream = javaClass.classLoader?.getResourceAsStream("response1.json")
+            val content = inputStream?.bufferedReader()?.use(BufferedReader::readText)
+            return responseAdapter.fromJson(content)!!
+        }
+
+        fun parseResponse2(): TweetsResponse {
+            val inputStream = javaClass.classLoader?.getResourceAsStream("response2.json")
             val content = inputStream?.bufferedReader()?.use(BufferedReader::readText)
             return responseAdapter.fromJson(content)!!
         }
