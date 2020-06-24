@@ -4,57 +4,60 @@ import com.scrater.vo.Entries
 import com.scrater.vo.Tweet
 import org.jsoup.Jsoup
 
-object Scraper {
+class Scraper {
 
-    fun parseHtml(account : String, htmlContent: String): List<Tweet> {
-        val parsedDocument = Jsoup.parse(htmlContent)
-        val tweets = parsedDocument.select(".stream-item")
-        val profiles = parsedDocument.select(".js-profile-popup-actionable")
+    companion object {
+        fun parseHtml(account: String, htmlContent: String): List<Tweet> {
+            val parsedDocument = Jsoup.parse(htmlContent)
+            val tweets = parsedDocument.select(".stream-item")
+            val profiles = parsedDocument.select(".js-profile-popup-actionable")
 
-        val parsedTweets = mutableListOf<Tweet>()
-        for (item in tweets zip profiles) {
-            val htmlText = item.first.getElementsByClass("tweet-text").html()
-            if (htmlText.isNullOrEmpty())
-                continue
+            var index = 1
+            return (tweets zip profiles)
+                .filter {
+                    // filter out dummy tweet elements
+                    val htmlText = it.first.getElementsByClass("tweet-text").html()
+                    !htmlText.isNullOrEmpty()
+                }.map { item ->
+                    val htmlText = item.first.getElementsByClass("tweet-text").html()
 
-            val tweetId = item.first.attr("data-item-id")
-            val tweetUrl = item.second.attr("data-permalink-path")
-            val username = item.second.attr("data-screen-name")
-            val isPinned = item.first.hasClass("js-pinned")
-            val timeInMillis = item.first.getElementsByClass("_timestamp")
-                .attr("data-time-ms").toLong()
+                    val tweetId = item.first.attr("data-item-id")
+                    val tweetUrl = item.second.attr("data-permalink-path")
+                    val username = item.second.attr("data-screen-name")
+                    val isPinned = item.first.hasClass("js-pinned")
+                    val timeInMillis = item.first.getElementsByClass("_timestamp")
+                        .attr("data-time-ms").toLong()
 
-            val interactions = item.first.getElementsByClass("ProfileTweet-actionCount")
-                .map { it.text() }.filter { it.isNotEmpty() }
-            val replies = interactions[0]
-            val retweets = interactions[1]
-            val likes = interactions[2]
+                    val interactions = item.first.getElementsByClass("ProfileTweet-actionCount")
+                        .map { it.text() }.filter { it.isNotEmpty() }
+                    val replies = interactions[0]
+                    val retweets = interactions[1]
+                    val likes = interactions[2]
 
-            val isRetweet = item.first.getElementsByClass("js-stream-tweet")
-                .hasAttr("data-retweet-id")
+                    val isRetweet = item.first.getElementsByClass("js-stream-tweet")
+                        .hasAttr("data-retweet-id")
 
-            val photos = item.first.getElementsByClass("AdaptiveMedia-photoContainer")
-                .eachAttr("data-image-url")
+                    val photos = item.first.getElementsByClass("AdaptiveMedia-photoContainer")
+                        .eachAttr("data-image-url")
 
-            val videos = item.first.getElementsByClass("PlayableMedia-player").size
+                    val videos = item.first.getElementsByClass("PlayableMedia-player").size
 
-            parsedTweets.add(
-                Tweet(
-                    account = account,
-                    tweetId = tweetId,
-                    tweetUrl = tweetUrl,
-                    username = username,
-                    time = timeInMillis,
-                    htmlText = htmlText,
-                    replies = replies,
-                    retweets = retweets,
-                    likes = likes,
-                    isRetweet = isRetweet,
-                    isPinned = isPinned,
-                    entries = Entries(photos, videos)
-                )
-            )
+                    Tweet(
+                        account = account,
+                        position = index++,
+                        tweetId = tweetId,
+                        tweetUrl = tweetUrl,
+                        username = username,
+                        time = timeInMillis,
+                        htmlText = htmlText,
+                        replies = replies,
+                        retweets = retweets,
+                        likes = likes,
+                        isRetweet = isRetweet,
+                        isPinned = isPinned,
+                        entries = Entries(photos, videos)
+                    )
+                }
         }
-        return parsedTweets
     }
 }

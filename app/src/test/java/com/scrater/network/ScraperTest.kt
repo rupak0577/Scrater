@@ -3,6 +3,7 @@ package com.scrater.network
 import com.google.common.truth.Truth.assertThat
 import com.scrater.TestHelpers.Companion.parseResponse
 import com.scrater.data.source.remote.Scraper
+import com.scrater.vo.Tweet
 import org.junit.Test
 
 class ScraperTest {
@@ -22,5 +23,7 @@ class ScraperTest {
         assertThat(tweets[1].isRetweet).isTrue()
         assertThat(tweets[8].entries.videos).isEqualTo(1)
         assertThat(tweets[12].entries.photos.size).isEqualTo(4)
+        assertThat(tweets).isInStrictOrder { o1, o2 -> (o1 as Tweet).position
+            .compareTo((o2 as Tweet).position) }
     }
 }
