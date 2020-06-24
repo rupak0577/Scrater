@@ -2,11 +2,13 @@ package com.scrater.data.source.local
 
 import android.content.Context
 import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.scrater.data.source.remote.Scraper
 import com.scrater.data.source.remote.response.TweetsResponse
+import com.scrater.vo.Tweet
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -22,16 +24,16 @@ import java.io.InputStream
 @RunWith(AndroidJUnit4::class)
 class TweetsDaoTest {
     private lateinit var context: Context
-    private lateinit var targetContext: Context
+    private lateinit var appContext: Context
     private lateinit var tweetsDao: TweetsDao
     private lateinit var db: TweetsDatabase
 
     @Before
     fun createDb() {
-        targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+        appContext = ApplicationProvider.getApplicationContext()
         context = InstrumentationRegistry.getInstrumentation().context
         db = Room.inMemoryDatabaseBuilder(
-            targetContext, TweetsDatabase::class.java
+            appContext, TweetsDatabase::class.java
         ).build()
         tweetsDao = db.tweetsDao()
     }
@@ -44,21 +46,19 @@ class TweetsDaoTest {
 
     @Test
     fun insertAndLoadTweets() = runBlocking {
-        var tweets = Scraper.parseHtml("elonmusk", parseTweetsResponse("response1").htmlContent)
+        var account = "elonmusk"
+        var tweets = Scraper.parseHtml(account, parseTweetsResponse("response1").htmlContent)
         tweetsDao.insertTweets(tweets)
 
-        var tweetsInDb = tweetsDao.loadTweets("elonmusk").take(1).toList()[0]
-        assertThat(tweetsInDb.size).isEqualTo(21)
-        assertThat(tweetsInDb[8].entries.videos).isEqualTo(1)
-        assertThat(tweetsInDb[12].entries.photos.size).isEqualTo(4)
+        var tweetsInDb = tweetsDao.loadTweets(account).take(1).toList()[0]
+        assertThat(tweetsInDb).isEqualTo(tweets)
 
-        tweets = Scraper.parseHtml("spacex", parseTweetsResponse("response2").htmlContent)
+        account = "spacex"
+        tweets = Scraper.parseHtml(account, parseTweetsResponse("response2").htmlContent)
         tweetsDao.insertTweets(tweets)
 
-        tweetsInDb = tweetsDao.loadTweets("spacex").take(1).toList()[0]
-        assertThat(tweetsInDb.size).isEqualTo(20)
-        assertThat(tweetsInDb[2].entries.videos).isEqualTo(1)
-        assertThat(tweetsInDb[8].entries.photos.size).isEqualTo(4)
+        tweetsInDb = tweetsDao.loadTweets(account).take(1).toList()[0]
+        assertThat(tweetsInDb).isEqualTo(tweets)
     }
 
     private fun parseTweetsResponse(fileName: String): TweetsResponse {

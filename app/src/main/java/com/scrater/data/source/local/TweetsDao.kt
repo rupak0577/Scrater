@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TweetsDao {
-    @Query("SELECT * from tweets WHERE account = :account")
+    @Query("SELECT * from tweets WHERE account = :account ORDER BY position ASC")
     fun loadTweets(account: String): Flow<List<Tweet>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
