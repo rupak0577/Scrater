@@ -5,11 +5,11 @@ import androidx.room.TypeConverter
 class StringListTypeConverter {
     @TypeConverter
     fun fromString(value: String): List<String> {
-        return value.split(";;").toList()
+        return value.split(";;").filterNot { it == "" }
     }
 
     @TypeConverter
-    fun fromArrayList(list: List<String>): String {
+    fun fromList(list: List<String>): String {
         return list.joinToString(";;")
     }
 }
