@@ -2,6 +2,7 @@ package com.scrater
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 /**
  * Provide coroutine dispatchers.
@@ -13,4 +14,4 @@ interface DispatcherProvider {
     fun unconfined(): CoroutineDispatcher = Dispatchers.Unconfined
 }
 
-class DefaultDispatcherProvider : DispatcherProvider
+class DefaultDispatcherProvider @Inject constructor() : DispatcherProvider

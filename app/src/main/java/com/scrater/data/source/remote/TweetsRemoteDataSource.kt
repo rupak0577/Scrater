@@ -8,8 +8,9 @@ import com.scrater.vo.Tweet
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class TweetsRemoteDataSource(
+class TweetsRemoteDataSource @Inject constructor(
     private val twitterService: TwitterService,
     private val moshi: Moshi
 ) : TweetsDataSource {

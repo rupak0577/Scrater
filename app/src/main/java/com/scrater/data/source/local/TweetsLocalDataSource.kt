@@ -5,8 +5,9 @@ import com.scrater.data.source.TweetsDataSource
 import com.scrater.vo.Tweet
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import javax.inject.Inject
 
-class TweetsLocalDataSource(private val tweetsDao: TweetsDao) : TweetsDataSource {
+class TweetsLocalDataSource @Inject constructor(private val tweetsDao: TweetsDao) : TweetsDataSource {
 
     override fun fetchTweetsAsFlow(account: String): Flow<List<Tweet>> {
         return tweetsDao.loadTweets(account)

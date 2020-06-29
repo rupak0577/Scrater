@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit
 /**
  * Utility class that decides whether we should fetch some data or not.
  */
-class TwitterRateLimiter(timeout: Int, timeUnit: TimeUnit) : RateLimiter<String> {
+class TwitterRateLimiter(timeout: Int, timeUnit: TimeUnit) :
+    RateLimiter<@JvmSuppressWildcards String> {
     private val timestamps = ArrayMap<String, Long>()
     private val timeout = timeUnit.toMillis(timeout.toLong())
 

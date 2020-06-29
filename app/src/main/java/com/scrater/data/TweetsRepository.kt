@@ -6,11 +6,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
-class TweetsRepository(
+@Singleton
+class TweetsRepository @Inject constructor(
+    @Named("Local")
     private val tweetsLocalDataSource: TweetsDataSource,
+    @Named("Remote")
     private val tweetsRemoteDataSource: TweetsDataSource,
-    private val twitterRateLimiter: RateLimiter<String>
+    private val twitterRateLimiter: @JvmSuppressWildcards RateLimiter<String>
 ) : Repository {
 
     override fun loadTweets(account: String): Flow<Result<List<Tweet>>> = flow {

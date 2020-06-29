@@ -6,8 +6,9 @@ import com.scrater.data.Repository
 import com.scrater.data.Result
 import com.scrater.vo.Tweet
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
-class MainViewModel(
+class MainViewModel @Inject constructor(
     private val tweetsRepository: Repository,
     private val dispatchers: DispatcherProvider
 ) : ViewModel() {
