@@ -24,12 +24,12 @@ import java.util.concurrent.TimeUnit
 /**
  * Utility class that decides whether we should fetch some data or not.
  */
-class TwitterRateLimiter<in KEY>(timeout: Int, timeUnit: TimeUnit) : RateLimiter<KEY> {
-    private val timestamps = ArrayMap<KEY, Long>()
+class TwitterRateLimiter(timeout: Int, timeUnit: TimeUnit) : RateLimiter<String> {
+    private val timestamps = ArrayMap<String, Long>()
     private val timeout = timeUnit.toMillis(timeout.toLong())
 
     @Synchronized
-    override fun shouldFetch(key: KEY): Boolean {
+    override fun shouldFetch(key: String): Boolean {
         val lastFetched = timestamps[key]
         val now = now()
         if (lastFetched == null) {
@@ -46,7 +46,7 @@ class TwitterRateLimiter<in KEY>(timeout: Int, timeUnit: TimeUnit) : RateLimiter
     private fun now() = SystemClock.uptimeMillis()
 
     @Synchronized
-    override fun reset(key: KEY) {
+    override fun reset(key: String) {
         timestamps.remove(key)
     }
 }
