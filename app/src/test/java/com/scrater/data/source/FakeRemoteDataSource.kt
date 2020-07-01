@@ -15,13 +15,13 @@ class FakeRemoteDataSource : TweetsDataSource {
     override suspend fun fetchTweets(account: String): Result<List<Tweet>> {
         return when (account) {
             "elonmusk" -> Result.Success(
-                Scraper.parseHtml(
+                Scraper.scrapeTweets(
                     account,
                     TestHelpers.parseResponse1().htmlContent
                 )
             )
             "spacex" -> Result.Success(
-                Scraper.parseHtml(
+                Scraper.scrapeTweets(
                     account,
                     TestHelpers.parseResponse2().htmlContent
                 )

@@ -25,7 +25,7 @@ class TweetsRemoteDataSource @Inject constructor(
                 Result.Error(Exception("Empty response"))
             }
             is ApiSuccessResponse -> {
-                Result.Success(Scraper.parseHtml(account, response.body.htmlContent))
+                Result.Success(Scraper.scrapeTweets(account, response.body.htmlContent))
             }
             is ApiErrorResponse -> {
                 val error = try {

@@ -50,7 +50,7 @@ class TweetsLocalDataSourceTest {
     fun testDataSource() {
         runBlocking {
             val account = "spacex"
-            val tweets = Scraper.parseHtml(account, parseTweetsResponse("response2").htmlContent)
+            val tweets = Scraper.scrapeTweets(account, parseTweetsResponse("response2").htmlContent)
             tweetsLocalDataSource.saveTweets(account, tweets)
 
             val dbData = tweetsLocalDataSource.fetchTweets(account)

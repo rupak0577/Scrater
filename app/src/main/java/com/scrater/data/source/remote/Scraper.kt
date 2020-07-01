@@ -2,12 +2,34 @@ package com.scrater.data.source.remote
 
 import com.scrater.vo.Entries
 import com.scrater.vo.Tweet
+import com.scrater.vo.Tweeter
 import org.jsoup.Jsoup
 
 class Scraper {
 
     companion object {
-        fun parseHtml(account: String, htmlContent: String): List<Tweet> {
+        fun scrapeProfile(username:String, htmlContent: String): Tweeter {
+            val parsedDocument = Jsoup.parse(htmlContent)
+            val avatar = parsedDocument.select(".ProfileAvatar-image")[0]
+                .attr("src")
+            val banner = parsedDocument.select(".ProfileCanopy-headerBg img")[0]
+                .attr("src")
+            val pageTitle = parsedDocument.select("title")[0].text()
+            val name = pageTitle.substring(0, pageTitle.indexOf("(") - 1)
+            val bio = parsedDocument.select(".ProfileHeaderCard-bio")[0].text()
+            val website = parsedDocument.select(".ProfileHeaderCard-urlText")[0].text()
+
+            return Tweeter(
+                username = username,
+                name = name,
+                bio = bio,
+                website = website,
+                avatar = avatar,
+                banner = if (banner.isEmpty()) null else banner
+            )
+        }
+
+        fun scrapeTweets(account: String, htmlContent: String): List<Tweet> {
             val parsedDocument = Jsoup.parse(htmlContent)
             val tweets = parsedDocument.select(".stream-item")
             val profiles = parsedDocument.select(".js-profile-popup-actionable")
@@ -24,9 +46,11 @@ class Scraper {
                     val tweetId = item.first.attr("data-item-id")
                     val tweetUrl = item.second.attr("data-permalink-path")
                     val username = item.second.attr("data-screen-name")
+                    val avatar = item.first.getElementsByClass("js-action-profile-avatar")
+                        .attr("src")
                     val isPinned = item.first.hasClass("js-pinned")
-                    val timeInMillis = item.first.getElementsByClass("_timestamp")
-                        .attr("data-time-ms").toLong()
+                    val time = item.first.getElementsByClass("tweet-timestamp")
+                        .attr("title")
 
                     val interactions = item.first.getElementsByClass("ProfileTweet-actionCount")
                         .map { it.text() }.filter { it.isNotEmpty() }
@@ -48,7 +72,8 @@ class Scraper {
                         tweetId = tweetId,
                         tweetUrl = tweetUrl,
                         username = username,
-                        time = timeInMillis,
+                        avatar = avatar,
+                        time = time,
                         htmlText = htmlText,
                         replies = replies,
                         retweets = retweets,

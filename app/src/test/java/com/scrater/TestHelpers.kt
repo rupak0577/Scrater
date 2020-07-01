@@ -24,12 +24,21 @@ class TestHelpers {
             return responseAdapter.fromJson(content)!!
         }
 
+        fun readProfileResponse(file: Int): String {
+            val inputStream = when (file) {
+                1 -> javaClass.classLoader?.getResourceAsStream("profile_response1.html")
+                2 -> javaClass.classLoader?.getResourceAsStream("profile_response2.html")
+                else -> null
+            }
+            return inputStream?.bufferedReader()?.use(BufferedReader::readText)!!
+        }
+
         fun scrapeResponse1(account: String): List<Tweet> {
-            return Scraper.parseHtml(account, parseResponse1().htmlContent)
+            return Scraper.scrapeTweets(account, parseResponse1().htmlContent)
         }
 
         fun scrapeResponse2(account: String): List<Tweet> {
-            return Scraper.parseHtml(account, parseResponse2().htmlContent)
+            return Scraper.scrapeTweets(account, parseResponse2().htmlContent)
         }
     }
 }

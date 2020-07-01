@@ -16,7 +16,8 @@ data class Tweet(
     @ColumnInfo(name = "tweet_url")
     val tweetUrl: String,
     val username: String,
-    val time: Long,
+    val avatar: String,
+    val time: String,
     @ColumnInfo(name = "html_text")
     val htmlText: String,
     val replies: String,

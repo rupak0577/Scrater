@@ -8,7 +8,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.scrater.data.source.remote.Scraper
 import com.scrater.data.source.remote.response.TweetsResponse
-import com.scrater.vo.Tweet
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -47,14 +46,14 @@ class TweetsDaoTest {
     @Test
     fun insertAndLoadTweets() = runBlocking {
         var account = "elonmusk"
-        var tweets = Scraper.parseHtml(account, parseTweetsResponse("response1").htmlContent)
+        var tweets = Scraper.scrapeTweets(account, parseTweetsResponse("response1").htmlContent)
         tweetsDao.insertTweets(tweets)
 
         var tweetsInDb = tweetsDao.loadTweets(account).take(1).toList()[0]
         assertThat(tweetsInDb).isEqualTo(tweets)
 
         account = "spacex"
-        tweets = Scraper.parseHtml(account, parseTweetsResponse("response2").htmlContent)
+        tweets = Scraper.scrapeTweets(account, parseTweetsResponse("response2").htmlContent)
         tweetsDao.insertTweets(tweets)
 
         tweetsInDb = tweetsDao.loadTweets(account).take(1).toList()[0]
