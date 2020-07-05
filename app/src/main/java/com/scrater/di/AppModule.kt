@@ -3,6 +3,7 @@ package com.scrater.di
 import android.content.Context
 import androidx.room.Room
 import com.scrater.data.TwitterRateLimiter
+import com.scrater.data.source.local.TweeterDao
 import com.scrater.data.source.local.TweetsDao
 import com.scrater.data.source.local.TweetsDatabase
 import com.scrater.data.source.remote.TwitterService
@@ -33,8 +34,13 @@ class AppModule {
     }
 
     @Provides
-    fun provideDao(db: TweetsDatabase): TweetsDao {
+    fun provideTweetDao(db: TweetsDatabase): TweetsDao {
         return db.tweetsDao()
+    }
+
+    @Provides
+    fun provideTweeterDao(db: TweetsDatabase): TweeterDao {
+        return db.tweeterDao()
     }
 
     @Provides

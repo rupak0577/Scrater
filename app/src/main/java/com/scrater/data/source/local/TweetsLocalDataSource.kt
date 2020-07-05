@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class TweetsLocalDataSource @Inject constructor(private val tweetsDao: TweetsDao) : TweetsDataSource {
+class TweetsLocalDataSource @Inject constructor(
+    private val tweetsDao: TweetsDao,
+    private val tweeterDao: TweeterDao
+) : TweetsDataSource {
 
     override fun fetchTweetsAsFlow(account: String): Flow<List<Tweet>> {
         return tweetsDao.loadTweets(account)
@@ -19,7 +22,7 @@ class TweetsLocalDataSource @Inject constructor(private val tweetsDao: TweetsDao
     }
 
     override suspend fun fetchTweeterDataAsFlow(username: String): Flow<Tweeter> {
-        TODO("Not yet implemented")
+        return tweeterDao.loadTweeter(username)
     }
 
     override suspend fun fetchTweeterData(username: String): Result<Tweeter> {
@@ -31,6 +34,6 @@ class TweetsLocalDataSource @Inject constructor(private val tweetsDao: TweetsDao
     }
 
     override suspend fun saveTweeterData(username: String, data: Tweeter) {
-        TODO("Not yet implemented")
+        tweeterDao.insertTweeter(data)
     }
 }

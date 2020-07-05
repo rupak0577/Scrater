@@ -9,6 +9,7 @@ import com.scrater.data.Result
 import com.scrater.data.source.TweetsDataSource
 import com.scrater.data.source.remote.Scraper
 import com.scrater.data.source.remote.response.TweetsResponse
+import com.scrater.vo.Tweeter
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -26,6 +27,7 @@ class TweetsLocalDataSourceTest {
     private lateinit var context: Context
     private lateinit var targetContext: Context
     private lateinit var tweetsDao: TweetsDao
+    private lateinit var tweeterDao: TweeterDao
     private lateinit var db: TweetsDatabase
     private lateinit var tweetsLocalDataSource: TweetsDataSource
 
@@ -37,7 +39,8 @@ class TweetsLocalDataSourceTest {
             targetContext, TweetsDatabase::class.java
         ).build()
         tweetsDao = db.tweetsDao()
-        tweetsLocalDataSource = TweetsLocalDataSource(tweetsDao)
+        tweeterDao = db.tweeterDao()
+        tweetsLocalDataSource = TweetsLocalDataSource(tweetsDao, tweeterDao)
     }
 
     @After
@@ -47,7 +50,7 @@ class TweetsLocalDataSourceTest {
     }
 
     @Test
-    fun testDataSource() {
+    fun testDataSourceForTweets() {
         runBlocking {
             val account = "spacex"
             val tweets = Scraper.scrapeTweets(account, parseTweetsResponse("response2").htmlContent)
@@ -59,6 +62,26 @@ class TweetsLocalDataSourceTest {
             assertThat((dbData as Result.Success).data).isEqualTo(tweets)
             assertThat(dbFlowData).isEqualTo(tweets)
         }
+    }
+
+    @Test
+    fun testDataSourceForTweeters() {
+        runBlocking {
+            val username = "spacex"
+            val tweeterData = parseProfileResponse(username, "profile_response1")
+            tweetsLocalDataSource.saveTweeterData(username, tweeterData)
+
+            val dbFlowData = tweetsLocalDataSource.fetchTweeterDataAsFlow(username).take(1).toList()[0]
+            assertThat(dbFlowData).isEqualTo(tweeterData)
+        }
+    }
+
+    private fun parseProfileResponse(username: String, fileName: String): Tweeter {
+        val testInput: InputStream = context.assets.open("$fileName.html")
+        return Scraper.scrapeProfile(
+            username,
+            testInput.bufferedReader().use(BufferedReader::readText)
+        )
     }
 
     private fun parseTweetsResponse(fileName: String): TweetsResponse {
