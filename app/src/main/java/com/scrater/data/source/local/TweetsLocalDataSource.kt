@@ -3,6 +3,7 @@ package com.scrater.data.source.local
 import com.scrater.data.Result
 import com.scrater.data.source.TweetsDataSource
 import com.scrater.vo.Tweet
+import com.scrater.vo.Tweeter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -17,7 +18,19 @@ class TweetsLocalDataSource @Inject constructor(private val tweetsDao: TweetsDao
         return Result.Success(tweetsDao.loadTweets(account).first())
     }
 
+    override suspend fun fetchTweeterDataAsFlow(username: String): Flow<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchTweeterData(username: String): Result<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun saveTweets(account: String, tweets: List<Tweet>) {
         tweetsDao.insertTweets(tweets)
+    }
+
+    override suspend fun saveTweeterData(username: String, data: Tweeter) {
+        TODO("Not yet implemented")
     }
 }

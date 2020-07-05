@@ -5,9 +5,11 @@ import com.scrater.data.source.TweetsDataSource
 import com.scrater.data.source.remote.response.ErrorResponse
 import com.scrater.data.source.remote.response.TweetsResponse
 import com.scrater.vo.Tweet
+import com.scrater.vo.Tweeter
 import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
+import okhttp3.ResponseBody
 import javax.inject.Inject
 
 class TweetsRemoteDataSource @Inject constructor(
@@ -20,7 +22,7 @@ class TweetsRemoteDataSource @Inject constructor(
     }
 
     override suspend fun fetchTweets(account: String): Result<List<Tweet>> {
-        return when (val response = request(account)) {
+        return when (val response = requestTweets(account)) {
             is ApiEmptyResponse -> {
                 Result.Error(Exception("Empty response"))
             }
@@ -38,14 +40,45 @@ class TweetsRemoteDataSource @Inject constructor(
         }
     }
 
+    override suspend fun fetchTweeterDataAsFlow(username: String): Flow<Tweeter> {
+        throw NotImplementedError()
+    }
+
+    override suspend fun fetchTweeterData(username: String): Result<Tweeter> {
+        return when (val response = requestProfile(username)) {
+            is ApiEmptyResponse -> {
+                Result.Error(Exception("Empty response"))
+            }
+            is ApiSuccessResponse -> {
+                Result.Success(Scraper.scrapeProfile(username, response.body.string()))
+            }
+            is ApiErrorResponse -> {
+                Result.Error(Exception(response.errorMessage))
+            }
+        }
+    }
+
     override suspend fun saveTweets(account: String, tweets: List<Tweet>) {
         throw NotImplementedError()
     }
 
-    private suspend fun request(account: String): ApiResponse<TweetsResponse> {
+    override suspend fun saveTweeterData(username: String, data: Tweeter) {
+        throw NotImplementedError()
+    }
+
+    private suspend fun requestTweets(account: String): ApiResponse<TweetsResponse> {
         return safeApiCall(
             call = {
                 ApiResponse.create(twitterService.fetchTweets(account))
+            },
+            errorMessage = "Error during network call"
+        )
+    }
+
+    private suspend fun requestProfile(username: String): ApiResponse<ResponseBody> {
+        return safeApiCall(
+            call = {
+                ApiResponse.create(twitterService.fetchProfile(username))
             },
             errorMessage = "Error during network call"
         )

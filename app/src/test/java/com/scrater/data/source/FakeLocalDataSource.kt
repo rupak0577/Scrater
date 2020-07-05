@@ -2,6 +2,7 @@ package com.scrater.data.source
 
 import com.scrater.data.Result
 import com.scrater.vo.Tweet
+import com.scrater.vo.Tweeter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -26,7 +27,19 @@ class FakeLocalDataSource : TweetsDataSource {
         }
     }
 
+    override suspend fun fetchTweeterDataAsFlow(username: String): Flow<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchTweeterData(username: String): Result<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun saveTweets(account: String, tweets: List<Tweet>) {
         localTweets[account] = tweets
+    }
+
+    override suspend fun saveTweeterData(username: String, data: Tweeter) {
+        TODO("Not yet implemented")
     }
 }

@@ -4,6 +4,7 @@ import com.scrater.TestHelpers
 import com.scrater.data.Result
 import com.scrater.data.source.remote.Scraper
 import com.scrater.vo.Tweet
+import com.scrater.vo.Tweeter
 import kotlinx.coroutines.flow.Flow
 
 class FakeRemoteDataSource : TweetsDataSource {
@@ -30,7 +31,19 @@ class FakeRemoteDataSource : TweetsDataSource {
         }
     }
 
+    override suspend fun fetchTweeterDataAsFlow(username: String): Flow<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchTweeterData(username: String): Result<Tweeter> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun saveTweets(account: String, tweets: List<Tweet>) {
         throw NotImplementedError()
+    }
+
+    override suspend fun saveTweeterData(username: String, data: Tweeter) {
+        TODO("Not yet implemented")
     }
 }

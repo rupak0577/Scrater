@@ -19,6 +19,9 @@ class MockServerDispatcher : Dispatcher() {
             path.format("abc") ->
                 return MockResponse().setResponseCode(404)
                     .setBody(enqueueResponse("error_response.json"))
+            "/spacex" ->
+                return MockResponse().setResponseCode(200)
+                    .setBody(enqueueResponse("profile_response1.html"))
         }
         return MockResponse().setResponseCode(200).setBody("some html string")
     }
